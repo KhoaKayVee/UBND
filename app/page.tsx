@@ -82,7 +82,7 @@ export default function Home() {
   };
 
   const filteredAndSortedProjects = projects
-    .filter((project: any) =>
+    .filter((project: { status: string }) =>
       filterStatus ? project.status === filterStatus : true
     )
     .sort((a, b) => {
@@ -172,34 +172,43 @@ export default function Home() {
             + Thêm Công Trình
           </button>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredAndSortedProjects.map((project) => (
-              <li
-                key={project.id}
-                className={`p-4 text-black rounded-lg shadow-lg ${getStatusClass(
-                  project.status
-                )}`}
-              >
-                <h3 className="font-bold text-lg mb-2">{project.name}</h3>
-                <p>Địa chỉ: {project.address}</p>
-                <p>Mô tả: {project.description}</p>
-                <p>Trạng thái: {project.status}</p>
-                <p>Tiến độ: {project.progress}%</p>
-                <div className="flex justify-end space-x-2 mt-2">
-                  <button
-                    onClick={() => handleEditProject(project.id)}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProject(project.id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                  >
-                    Xóa
-                  </button>
-                </div>
-              </li>
-            ))}
+            {filteredAndSortedProjects.map(
+              (project: {
+                id: string;
+                name: string;
+                address: string;
+                description: string;
+                status: string;
+                progress: number;
+              }) => (
+                <li
+                  key={project.id}
+                  className={`p-4 text-black rounded-lg shadow-lg ${getStatusClass(
+                    project.status
+                  )}`}
+                >
+                  <h3 className="font-bold text-lg mb-2">{project.name}</h3>
+                  <p>Địa chỉ: {project.address}</p>
+                  <p>Mô tả: {project.description}</p>
+                  <p>Trạng thái: {project.status}</p>
+                  <p>Tiến độ: {project.progress}%</p>
+                  <div className="flex justify-end space-x-2 mt-2">
+                    <button
+                      onClick={() => handleEditProject(project.id)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProject(project.id)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </li>
+              )
+            )}
           </ul>
         </section>
 
