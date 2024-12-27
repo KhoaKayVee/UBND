@@ -14,7 +14,7 @@ import {
 } from "../firebase";
 
 interface Project {
-  id: string;
+  id?: string; // Dấu '?' chỉ ra rằng thuộc tính này là tùy chọn
   name: string;
   address: string;
   description: string;
@@ -62,9 +62,10 @@ export default function Home() {
       return;
     }
 
-    if (editMode) {
-      const projectRef = doc(db, "projects", editingProjectId!);
-      await updateDoc(projectRef, newProject);
+    if (editMode && editingProjectId) {
+      const projectRef = doc(db, "projects", editingProjectId);
+      const { id, ...rest } = newProject; // Loại bỏ `id` khi cập nhật
+      await updateDoc(projectRef, rest);
     } else {
       await addDoc(collection(db, "projects"), newProject);
     }
@@ -72,7 +73,6 @@ export default function Home() {
     setEditMode(false);
     setEditingProjectId(null);
     setNewProject({
-      id: "",
       name: "",
       address: "",
       description: "",
@@ -194,7 +194,7 @@ export default function Home() {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredAndSortedProjects.map(
               (project: {
-                id: string;
+                id?: string;
                 name: string;
                 address: string;
                 description: string;
