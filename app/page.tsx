@@ -14,7 +14,7 @@ import {
 } from "../firebase";
 
 interface Project {
-  id?: string; // Dấu '?' chỉ ra rằng thuộc tính này là tùy chọn
+  id: string; // Không còn dấu `?`, đảm bảo `id` luôn tồn tại
   name: string;
   address: string;
   description: string;
@@ -80,7 +80,7 @@ export default function Home() {
     });
   };
 
-  const handleDeleteProject = async (id: any) => {
+  const handleDeleteProject = async (id: string) => {
     const projectRef = doc(db, "projects", id);
     await deleteDoc(projectRef);
   };
@@ -105,7 +105,7 @@ export default function Home() {
     setShowModal(true);
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     if (status === "Đang thực hiện") return "bg-yellow-300";
     if (status === "Hoàn thành") return "bg-green-300";
     if (status === "Mới bắt đầu") return "bg-red-300";
@@ -225,11 +225,14 @@ export default function Home() {
                   <p>Tiến độ: {project.progress}%</p>
                   <div className="flex justify-end space-x-2 mt-2">
                     <button
-                      onClick={() => handleEditProject(project.id)}
+                      onClick={() =>
+                        project.id && handleEditProject(project.id)
+                      } // Kiểm tra `project.id` không phải undefined
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                     >
                       Sửa
                     </button>
+
                     <button
                       onClick={() => handleDeleteProject(project.id)}
                       className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
