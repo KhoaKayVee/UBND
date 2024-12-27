@@ -85,9 +85,21 @@ export default function Home() {
     await deleteDoc(projectRef);
   };
 
-  const handleEditProject = (id: any) => {
+  const handleEditProject = (id: string) => {
     const projectToEdit = projects.find((project) => project.id === id);
-    setNewProject(projectToEdit);
+
+    if (!projectToEdit) {
+      alert("Không tìm thấy công trình để chỉnh sửa!");
+      return;
+    }
+
+    setNewProject({
+      name: projectToEdit.name,
+      address: projectToEdit.address,
+      description: projectToEdit.description,
+      status: projectToEdit.status,
+      progress: projectToEdit.progress,
+    });
     setEditMode(true);
     setEditingProjectId(id);
     setShowModal(true);
