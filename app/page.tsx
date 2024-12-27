@@ -3,7 +3,15 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { db, collection, onSnapshot } from "../firebase";
+import {
+  db,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "../firebase";
 
 interface Project {
   id: string;
@@ -20,7 +28,7 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editingProjectId, setEditingProjectId] = useState(null);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
   const [filterStatus, setFilterStatus] = useState("");
   const [sortBy, setSortBy] = useState("name");
@@ -41,11 +49,11 @@ export default function Home() {
             id: doc.id,
             ...doc.data(),
           } as Project)
-      ); // Định rõ kiểu dữ liệu
+      );
       setProjects(projectsData);
     });
 
-    return () => unsubscribe(); // Dừng lắng nghe khi component bị unmount
+    return () => unsubscribe();
   }, []);
 
   const handleAddOrEditProject = async () => {
@@ -55,22 +63,22 @@ export default function Home() {
     }
 
     if (editMode) {
-      const projectRef = doc(db, "projects", editingProjectId);
+      const projectRef = doc(db, "projects", editingProjectId!);
       await updateDoc(projectRef, newProject);
     } else {
       await addDoc(collection(db, "projects"), newProject);
     }
 
-    setShowModal(false);
+    setEditMode(false);
+    setEditingProjectId(null);
     setNewProject({
+      id: "",
       name: "",
       address: "",
       description: "",
       status: "Mới bắt đầu",
       progress: 0,
     });
-    setEditMode(false);
-    setEditingProjectId(null);
   };
 
   const handleDeleteProject = async (id: any) => {
