@@ -5,10 +5,19 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { db, collection, onSnapshot } from "../firebase";
 
+interface Project {
+  id: string;
+  name: string;
+  address: string;
+  description: string;
+  status: string;
+  progress: number;
+}
+
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function Home() {
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState(null);
@@ -26,10 +35,13 @@ export default function Home() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "projects"), (snapshot) => {
-      const projectsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const projectsData: Project[] = snapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as Project)
+      ); // Định rõ kiểu dữ liệu
       setProjects(projectsData);
     });
 
@@ -61,7 +73,7 @@ export default function Home() {
     setEditingProjectId(null);
   };
 
-  const handleDeleteProject = async (id) => {
+  const handleDeleteProject = async (id: any) => {
     const projectRef = doc(db, "projects", id);
     await deleteDoc(projectRef);
   };
