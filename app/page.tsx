@@ -43,13 +43,10 @@ export default function Home() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "projects"), (snapshot) => {
-      const projectsData: Project[] = snapshot.docs.map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-          } as Project)
-      );
+      const projectsData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setProjects(projectsData);
     });
 

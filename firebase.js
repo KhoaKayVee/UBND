@@ -1,6 +1,6 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// Import Firebase modules
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import {
   getFirestore,
   collection,
@@ -11,11 +11,7 @@ import {
   doc,
 } from "firebase/firestore";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA7qu9-dbYzhBtz_oT-tuQc9eKdCtXhWGM",
   authDomain: "ubnd-3cb91.firebaseapp.com",
@@ -26,9 +22,20 @@ const firebaseConfig = {
   measurementId: "G-42T7LVP89Q",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Initialize Firebase app
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// Initialize Firestore
 const db = getFirestore(app);
+
+// Initialize Analytics (optional, only if supported)
+let analytics;
+if (typeof window !== "undefined") {
+  isSupported().then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app);
+    }
+  });
+}
 
 export { db, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc };
