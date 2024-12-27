@@ -234,7 +234,9 @@ export default function Home() {
                     </button>
 
                     <button
-                      onClick={() => handleDeleteProject(project.id)}
+                      onClick={() =>
+                        project.id && handleDeleteProject(project.id)
+                      }
                       className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
                     >
                       Xóa
