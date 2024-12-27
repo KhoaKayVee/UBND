@@ -43,10 +43,17 @@ export default function Home() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "projects"), (snapshot) => {
-      const projectsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const projectsData: Project[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name || "",
+          address: data.address || "",
+          description: data.description || "",
+          status: data.status || "Mới bắt đầu",
+          progress: data.progress || 0,
+        } as Project;
+      });
       setProjects(projectsData);
     });
 
