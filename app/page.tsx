@@ -64,8 +64,7 @@ export default function Home() {
 
     if (editMode && editingProjectId) {
       const projectRef = doc(db, "projects", editingProjectId);
-      const { id, ...rest } = newProject; // Loại bỏ `id` khi cập nhật
-      await updateDoc(projectRef, rest);
+      await updateDoc(projectRef, newProject); // Không cần loại bỏ `id`
     } else {
       await addDoc(collection(db, "projects"), newProject);
     }
